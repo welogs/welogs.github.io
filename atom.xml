@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://welogs.github.io</id>
+    <title></title>
+    <updated>2020-07-13T08:54:40.114Z</updated>
+    <generator>https://github.com/jpmonette/feed</generator>
+    <link rel="alternate" href="https://welogs.github.io"/>
+    <link rel="self" href="https://welogs.github.io/atom.xml"/>
+    <logo>https://welogs.github.io/images/avatar.png</logo>
+    <icon>https://welogs.github.io/favicon.ico</icon>
+    <rights>All rights reserved 2020, </rights>
+    <entry>
+        <title type="html"><![CDATA[Mongodb自动备份数据库并删除指定天数前的备份]]></title>
+        <id>https://welogs.github.io/mongodb backup/</id>
+        <link href="https://welogs.github.io/mongodb backup/">
+        </link>
+        <updated>2020-07-12T03:57:54.000Z</updated>
+        <content type="html"><![CDATA[<p><strong>参考文章</strong>：<br>
+Mongodb自动备份数据库并删除指定天数前的备份<br>
+https://www.cnblogs.com/gaoguangjun/p/8524526.html<br>
+https://www.osyunwei.com/archives/8985.html<br>
+设置树莓派时区（中国时区）<br>
+https://blog.csdn.net/github_38111866/article/details/76057237<br>
+https://blog.csdn.net/faryang/article/details/50779346<br>
+<strong>硬件版本</strong>：RaspberryPi 2 Model B V1.1<br>
+<strong>系统版本</strong>：2017-07-05-raspbian-jessie-lite<br>
+<strong>实践情况</strong>：搭建成功</p>
+<p><strong>1</strong>、创建Mongodb数据库备份目录<br>
+sudo mkdir -p /home/mongod_bak/mongod_bak_now<br>
+sudo mkdir -p /home/mongod_bak/mongod_bak_list</p>
+<p><strong>2</strong>、新建Mongodb数据库备份脚本<br>
+sudo nano /home/mongod_bak/mongod_bak.sh #新建文件，输入以下代码<br>
+#!/bin/sh<br>
+DUMP=/usr/bin/mongodump #mongodump备份文件执行路径<br>
+OUT_DIR=/home/mongod_bak/mongod_bak_now #临时备份目录<br>
+TAR_DIR=/home/mongod_bak/mongod_bak_list #备份存放路径<br>
+DATE=<code>date +%Y_%m_%d</code> #获取当前系统时间<br>
+DB_USER= #数据库账号<br>
+DB_PASS= #数据库密码<br>
+DAYS=7 #DAYS=7代表删除7天前的备份，即只保留最近7天的备份<br>
+TAR_BAK=&quot;mongod_bak_$DATE.tar.gz&quot; #最终保存的数据库备份文件名<br>
+cd $OUT_DIR<br>
+rm -rf $OUT_DIR/*<br>
+mkdir -p <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>O</mi><mi>U</mi><msub><mi>T</mi><mi>D</mi></msub><mi>I</mi><mi>R</mi><mi mathvariant="normal">/</mi></mrow><annotation encoding="application/x-tex">OUT_DIR/</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">O</span><span class="mord mathdefault" style="margin-right:0.10903em;">U</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.13889em;">T</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.32833099999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.02778em;">D</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord mathdefault" style="margin-right:0.07847em;">I</span><span class="mord mathdefault" style="margin-right:0.00773em;">R</span><span class="mord">/</span></span></span></span>DATE<br>
+$DUMP -h 127.0.0.1:27017 -o <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>O</mi><mi>U</mi><msub><mi>T</mi><mi>D</mi></msub><mi>I</mi><mi>R</mi><mi mathvariant="normal">/</mi></mrow><annotation encoding="application/x-tex">OUT_DIR/</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">O</span><span class="mord mathdefault" style="margin-right:0.10903em;">U</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.13889em;">T</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.32833099999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.02778em;">D</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord mathdefault" style="margin-right:0.07847em;">I</span><span class="mord mathdefault" style="margin-right:0.00773em;">R</span><span class="mord">/</span></span></span></span>DATE<br>
+tar -zcvf <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>T</mi><mi>A</mi><msub><mi>R</mi><mi>D</mi></msub><mi>I</mi><mi>R</mi><mi mathvariant="normal">/</mi></mrow><annotation encoding="application/x-tex">TAR_DIR/</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">T</span><span class="mord mathdefault">A</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.00773em;">R</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.32833099999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.00773em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.02778em;">D</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord mathdefault" style="margin-right:0.07847em;">I</span><span class="mord mathdefault" style="margin-right:0.00773em;">R</span><span class="mord">/</span></span></span></span>TAR_BAK <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>O</mi><mi>U</mi><msub><mi>T</mi><mi>D</mi></msub><mi>I</mi><mi>R</mi><mi mathvariant="normal">/</mi></mrow><annotation encoding="application/x-tex">OUT_DIR/</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.02778em;">O</span><span class="mord mathdefault" style="margin-right:0.10903em;">U</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.13889em;">T</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.32833099999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.02778em;">D</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord mathdefault" style="margin-right:0.07847em;">I</span><span class="mord mathdefault" style="margin-right:0.00773em;">R</span><span class="mord">/</span></span></span></span>DATE #压缩为.tar.gz格式<br>
+find <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>T</mi><mi>A</mi><msub><mi>R</mi><mi>D</mi></msub><mi>I</mi><mi>R</mi><mi mathvariant="normal">/</mi><mo>−</mo><mi>m</mi><mi>t</mi><mi>i</mi><mi>m</mi><mi>e</mi><mo>+</mo></mrow><annotation encoding="application/x-tex">TAR_DIR/ -mtime +</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">T</span><span class="mord mathdefault">A</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.00773em;">R</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.32833099999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.00773em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight" style="margin-right:0.02778em;">D</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord mathdefault" style="margin-right:0.07847em;">I</span><span class="mord mathdefault" style="margin-right:0.00773em;">R</span><span class="mord">/</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.74285em;vertical-align:-0.08333em;"></span><span class="mord mathdefault">m</span><span class="mord mathdefault">t</span><span class="mord mathdefault">i</span><span class="mord mathdefault">m</span><span class="mord mathdefault">e</span><span class="mord">+</span></span></span></span>DAYS -delete #删除7天前的备份文件</p>
+<p><strong>3</strong>、修改文件属性，使其可执行<br>
+sudo chmod +x /home/mongod_bak/mongod_bak.sh<br>
+或者<br>
+sudo chmod 777 /home/mongod_bak/mongod_bak.sh</p>
+<p><strong>4</strong>、添加计划任务<br>
+sudo dpkg-reconfigure tzdata<br>
+设置为上海<br>
+sudo apt-get install cron<br>
+crontab -e</p>
+<p>添加 11 1 * * * sudo /home/mongod_bak/mongod_bak.sh<br>
+sudo /etc/init.d/cron restart<br>
+sudo nano /etc/rc.local<br>
+sudo /etc/init.d/cron restart</p>
+<p>每天在/home/backup/mongod_bak/mongod_bak_list目录下面可以看到mongod_bak_2018_02_28.tar.gz这样的压缩文件。<br>
+至此，Linux下自动备份Mongodb数据库并删除指定天数前的备份完成。</p>
+<hr>
+<p><strong>附录</strong>：Mongodb数据库恢复<br>
+恢复全部数据库：<br>
+mongorestore –drop –directoryperdb<br>
+/home/backup/mongod_bak/mongod_bak_now/2018_02_28/</p>
+<p>恢复单个数据库：<br>
+mongorestore –drop -d dataname –directoryperdb<br>
+/home/backup/mongod_bak/mongod_bak_now/2018_02_28/dataname<br>
+–drop参数：恢复数据之前删除原来数据库数据，避免数据重复。<br>
+–directoryperdb参数：数据库备份目录<br>
+-d参数：后面跟要恢复的数据库名称</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[树莓派搭建Leanote私有网络云笔记]]></title>
+        <id>https://welogs.github.io/raspberry pi install leanote/</id>
+        <link href="https://welogs.github.io/raspberry pi install leanote/">
+        </link>
+        <updated>2020-07-12T03:28:12.000Z</updated>
+        <content type="html"><![CDATA[<p><strong>参考文章</strong>： https://www.aizheteng.net/raspberry-leanote.html<br>
+<strong>硬件版本</strong>：RaspberryPi 2 Model B V1.1<br>
+<strong>系统版本</strong>：2017-07-05-raspbian-jessie-lite<br>
+****实践情况：搭建成功</p>
+<p><strong>系统更新</strong><br>
+sudo apt-get update</p>
+<p><strong>创建目录</strong><br>
+sudo mkdir /home/note<br>
+sudo mkdir /home/note/data</p>
+<p><strong>下载leanote</strong><br>
+cd /home/note<br>
+sudo wget https://jaist.dl.sourceforge.net/project/leanote-bin/2.6.1/leanote-linux-arm-v2.6.1.bin.tar.gz<br>
+sudo tar -xzvf leanote-linux-arm-v2.6.1.bin.tar.gz<br>
+sudo cp -r /home/note/leanote/* /home/note/<br>
+sudo rm -rf leanote</p>
+<p><strong>安装mongo并导入数据</strong><br>
+sudo apt-get install mongodb -y<br>
+sudo mongod --dbpath /home/note/data<br>
+mongo<br>
+show dbs<br>
+sudo mongorestore -h localhost -d leanote --dir /home/note/mongodb_backup/leanote_install_data/<br>
+sudo systemctl start mongodb<br>
+mongo<br>
+show dbs</p>
+<p><strong>启动</strong><br>
+sudo bash /home/note/bin/run.sh<br>
+sudo nohup /bin/bash /home/note/bin/run.sh &amp;</p>
+<p><strong>添加自启动</strong><br>
+sudo nano /etc/rc.local<br>
+sudo nohup /bin/bash /home/note/bin/run.sh &amp;</p>
+<p><strong>开启root账号</strong><br>
+sudo passwd root<br>
+sudo passwd --unlock root<br>
+sudo nano /etc/ssh/sshd_config<br>
+PermitRootLogin yes<br>
+reboot</p>
+]]></content>
+    </entry>
+</feed>

@@ -1,0 +1,188 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>树莓派搭建Leanote私有网络云笔记 | </title>
+<link rel="shortcut icon" href="https://welogs.github.io/favicon.ico?v=1594630475365">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://welogs.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="树莓派搭建Leanote私有网络云笔记 |  - Atom Feed" href="https://welogs.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+    <meta name="description" content="参考文章： https://www.aizheteng.net/raspberry-leanote.html
+硬件版本：RaspberryPi 2 Model B V1.1
+系统版本：2017-07-05-raspbian-jessie-l..." />
+    <meta name="keywords" content="Leanote,Raspberry pi" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://welogs.github.io">
+  <img class="avatar" src="https://welogs.github.io/images/avatar.png?v=1594630475365" alt="">
+  </a>
+  <h1 class="site-title">
+    
+  </h1>
+  <p class="site-description">
+    
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              树莓派搭建Leanote私有网络云笔记
+            </h2>
+            <div class="post-info">
+              <span>
+                2020-07-12
+              </span>
+              <span>
+                2 min read
+              </span>
+              
+                <a href="https://welogs.github.io/H21kWNe0s/" class="post-tag">
+                  # Leanote
+                </a>
+              
+                <a href="https://welogs.github.io/f15gOI6w69/" class="post-tag">
+                  # Raspberry pi
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <p><strong>参考文章</strong>： https://www.aizheteng.net/raspberry-leanote.html<br>
+<strong>硬件版本</strong>：RaspberryPi 2 Model B V1.1<br>
+<strong>系统版本</strong>：2017-07-05-raspbian-jessie-lite<br>
+****实践情况：搭建成功</p>
+<p><strong>系统更新</strong><br>
+sudo apt-get update</p>
+<p><strong>创建目录</strong><br>
+sudo mkdir /home/note<br>
+sudo mkdir /home/note/data</p>
+<p><strong>下载leanote</strong><br>
+cd /home/note<br>
+sudo wget https://jaist.dl.sourceforge.net/project/leanote-bin/2.6.1/leanote-linux-arm-v2.6.1.bin.tar.gz<br>
+sudo tar -xzvf leanote-linux-arm-v2.6.1.bin.tar.gz<br>
+sudo cp -r /home/note/leanote/* /home/note/<br>
+sudo rm -rf leanote</p>
+<p><strong>安装mongo并导入数据</strong><br>
+sudo apt-get install mongodb -y<br>
+sudo mongod --dbpath /home/note/data<br>
+mongo<br>
+show dbs<br>
+sudo mongorestore -h localhost -d leanote --dir /home/note/mongodb_backup/leanote_install_data/<br>
+sudo systemctl start mongodb<br>
+mongo<br>
+show dbs</p>
+<p><strong>启动</strong><br>
+sudo bash /home/note/bin/run.sh<br>
+sudo nohup /bin/bash /home/note/bin/run.sh &amp;</p>
+<p><strong>添加自启动</strong><br>
+sudo nano /etc/rc.local<br>
+sudo nohup /bin/bash /home/note/bin/run.sh &amp;</p>
+<p><strong>开启root账号</strong><br>
+sudo passwd root<br>
+sudo passwd --unlock root<br>
+sudo nano /etc/ssh/sshd_config<br>
+PermitRootLogin yes<br>
+reboot</p>
+
+              </div>
+              <div class="toc-container">
+                
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+
+        
+
+        <div class="site-footer">
+  
+  <a class="rss" href="https://welogs.github.io/atom.xml" target="_blank">
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>
